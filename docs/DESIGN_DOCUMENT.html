@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS-027: Technical Design Document — Team T096</title>
+    <!-- Mermaid.js for Vector Diagram Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        @page {
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f8fafc;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 50px 60px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-radius: 8px;
+        }
+
+        .header-banner {
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 25px;
+            margin-bottom: 35px;
+        }
+
+        .doc-tag {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #475569;
+            margin: 0 0 20px 0;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 16px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .meta-item strong {
+            color: #334155;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 18px;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #334155;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p, li {
+            font-size: 14px;
+            color: #334155;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 20px 0;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+        }
+
+        td {
+            padding: 9px 14px;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .diagram-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .callout {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 14px 18px;
+            border-radius: 0 6px 6px 0;
+            margin: 20px 0;
+            font-size: 13.5px;
+            color: #1e40af;
+        }
+
+        .callout strong {
+            color: #1e3a8a;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .document-container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .diagram-box {
+                border: 1px solid #cbd5e1;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="document-container">
+    
+    <!-- Title and Metadata -->
+    <div class="header-banner">
+        <span class="doc-tag">10 SECONDS · Capstone Project · Week 1 Deliverable</span>
+        <h1>Technical Design Document</h1>
+        <div class="subtitle">PS-027: Merchant Cash Advance (MCA) & Revenue-Based Financing (RBF) Engine</div>
+        
+        <div class="meta-grid">
+            <div class="meta-item"><strong>Team ID:</strong> T096</div>
+            <div class="meta-item"><strong>Problem Statement:</strong> PS-027</div>
+            <div class="meta-item"><strong>Domain:</strong> BFSI — Alternative Lending</div>
+            <div class="meta-item"><strong>Language & Framework:</strong> Python 3.10+ (Zero Framework, Pure Clean OOP)</div>
+            <div class="meta-item"><strong>Repository:</strong> <a href="https://github.com/Vamshi3304/T096.git">github.com/Vamshi3304/T096.git</a></div>
+            <div class="meta-item"><strong>Submission Checkpoint:</strong> Week 1 (Design & Architecture)</div>
+        </div>
+    </div>
+
+    <!-- Section 1: Executive Summary & Glossary -->
+    <h2>1. Executive Summary & Domain Glossary</h2>
+    
+    <h3>1.1 Problem Overview</h3>
+    <p>
+        Traditional commercial banking relies on fixed monthly installments (EMIs) with compounding interest, which frequently penalizes small merchants during seasonal sales dips. 
+        <strong>Revenue-Based Financing (RBF)</strong> and <strong>Merchant Cash Advances (MCA)</strong> solve this working-capital challenge by purchasing a specified amount of future payment receivables at an agreed purchase price.
+    </p>
+    <p>Instead of charging interest:</p>
+    <ul>
+        <li>The lender advances upfront capital (<code>Advance</code>).</li>
+        <li>The merchant agrees to repay a fixed total sum (<code>Repayment Cap = Advance × Factor Rate</code>).</li>
+        <li>The lender automatically sweeps a fixed percentage (<code>Holdback %</code>) of daily card and UPI settlement payouts.</li>
+        <li>If daily revenue is high, repayment accelerates; if revenue drops, repayment naturally slows down without default fees.</li>
+        <li>Periodic <strong>True-Ups</strong> dynamically adjust the holdback percentage mid-term to maintain expected tenure, while bank mandates protect against severe underperformance.</li>
+    </ul>
+
+    <h3>1.2 Domain Glossary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Term</th>
+                <th>Industry & Technical Definition</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Gross Sales</strong></td>
+                <td>Total customer payments processed via Point-of-Sale (POS) card swipes or UPI QR codes prior to aggregator fees.</td>
+            </tr>
+            <tr>
+                <td><strong>MDR (Merchant Discount Rate)</strong></td>
+                <td>Processing fee charged by payment aggregators (typically ~1.5% of gross sales).</td>
+            </tr>
+            <tr>
+                <td><strong>Refunds</strong></td>
+                <td>Reversals and refunds issued on customer returns. Deducted directly from daily settlement receipts.</td>
+            </tr>
+            <tr>
+                <td><strong>Net Settlement</strong></td>
+                <td><code>Gross Sales − MDR − Refunds</code>. The actual daily cash payout disbursed by the aggregator to the merchant, against which holdback sweeps are calculated.</td>
+            </tr>
+            <tr>
+                <td><strong>Advance Amount</strong></td>
+                <td>Upfront capital funded to the merchant, sized as max 1.2× basis monthly settlements, capped at Rs 25,00,000.</td>
+            </tr>
+            <tr>
+                <td><strong>Factor Rate</strong></td>
+                <td>Fixed pricing multiplier (1.12, 1.18, or 1.25) determined by cash-flow volatility (CV). MCA uses <strong>no compounding interest</strong>; the factor is the only financing cost.</td>
+            </tr>
+            <tr>
+                <td><strong>Repayment Cap</strong></td>
+                <td>Total repayment obligation: <code>Advance × Factor Rate</code>.</td>
+            </tr>
+            <tr>
+                <td><strong>Holdback Percentage</strong></td>
+                <td>Share (default 12%, range 8%–20%) withheld from each net settlement payout to amortize the balance.</td>
+            </tr>
+            <tr>
+                <td><strong>Expected Term</strong></td>
+                <td>Estimated repayment duration in days: <code>Cap / (Holdback × Average Daily Settlement)</code>. Statutory target is 120 to 270 days.</td>
+            </tr>
+            <tr>
+                <td><strong>True-Up</strong></td>
+                <td>Periodic calibration on Day 60 and every 30 days after. If cumulative collections &gt; 130% of plan, holdback drops 2 points; if &lt; 70%, holdback rises 2 points.</td>
+            </tr>
+            <tr>
+                <td><strong>Bank Mandate</strong></td>
+                <td>Pre-authorized e-NACH mandate on merchant's bank account to debit weekly shortfalls on Mondays when weekly sweeps fall below 50% of expectation.</td>
+            </tr>
+            <tr>
+                <td><strong>WATCH Status</strong></td>
+                <td>Delinquency warning status triggered upon 2 missed weekly shortfall debits. Blocks all contract renewals.</td>
+            </tr>
+            <tr>
+                <td><strong>DEFAULT Status</strong></td>
+                <td>Default status triggered upon 4 missed weekly shortfall debits. Accelerates total remaining balance plus 5% penalty, and ceases all future daily sweeps.</td>
+            </tr>
+            <tr>
+                <td><strong>Early Payoff</strong></td>
+                <td>Settlement before maturity: discounts 50% of uncollected factor portion before Day 90, or 25% discount on or after Day 90.</td>
+            </tr>
+            <tr>
+                <td><strong>Refinance</strong></td>
+                <td>Buyout of financing from an external lender upon presentation of a payoff letter. Sizing is capped at 1.0× monthly settlements.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 2: Architecture & Component Design -->
+    <h2>2. System Architecture & Component Design</h2>
+    <p>
+        The engine is engineered using <strong>Clean Architecture</strong> principles without UI or heavy web frameworks, ensuring deterministic command-file execution and 100% testability.
+    </p>
+
+    <div class="diagram-box">
+        <div class="mermaid">
+flowchart TD
+    subgraph Ingestion Layer
+        A1[merchants.csv] --> B1[Ingestion Module]
+        A2[settlement_history.csv] --> B1
+        A3[settlement_events.csv] --> B1
+        A4[holidays.csv] --> B1
+        A5[commands.txt] --> B1
+    end
+
+    subgraph Domain Engine
+        B1 --> C1[Underwriting Service]
+        C1 -->|BR-01 to BR-05| D1[UnderwritingOffer]
+        B1 --> E1[Simulation Engine]
+        E1 -->|BR-06 Daily Sweep| S1[Sweep Calculator]
+        E1 -->|BR-08 True-Up Check| S2[Performance True-Up]
+        E1 -->|BR-09 Weekly Minimum| S3[Mandate Shortfall Debit]
+        E1 -->|BR-10 Delinquency| S4[Watch & Default Engine]
+        E1 -->|BR-11 Term Tracking| S5[Review Monitor]
+        E1 -->|BR-12 Early Payoff| P1[Payoff Engine]
+        E1 -->|BR-13 Renewal| P2[Renewal Engine]
+        E1 -->|BR-14 Refinance| P3[Refinance Engine]
+    end
+
+    subgraph Reporting Layer
+        E1 --> R1[offer_sheet.csv]
+        E1 --> R2[daily_ledger.csv]
+        E1 --> R3[payoffs.csv]
+        E1 --> R4[portfolio_ageing.csv]
+    end
+        </div>
+    </div>
+
+    <!-- Section 3: Domain Class Diagram -->
+    <h2>3. Entity Domain Class Diagram</h2>
+    <p>
+        Domain entities are modeled with strict typing using Python dataclasses and enums:
+    </p>
+
+    <div class="diagram-box">
+        <div class="mermaid">
+classDiagram
+    class MerchantProfile {
+        +String merchant_id
+        +String business_name
+        +String owner_name
+        +String city
+        +String category
+        +Date business_start_date
+        +String aggregator_id
+        +String mandate_id
+        +String ifsc
+        +String mobile
+    }
+
+    class UnderwritingOffer {
+        +String merchant_id
+        +String command
+        +Date underwrite_date
+        +Boolean eligible
+        +List~String~ failed_rule_ids
+        +Float avg_monthly_6m
+        +Float avg_monthly_3m
+        +Float basis_monthly
+        +Float cv
+        +Float factor
+        +Float advance
+        +Float cap
+        +Float origination_fee
+        +Float gst_on_fee
+        +Float net_disbursal
+        +Float holdback_pct
+        +Float avg_daily_settlement
+        +Float expected_term_days
+        +Float effective_apr
+    }
+
+    class MerchantSimulationState {
+        +MerchantProfile profile
+        +UnderwritingOffer offer
+        +Date disbursal_date
+        +MerchantStatus status
+        +Float current_holdback
+        +Float holdback_for_next_day
+        +Float cumulative_collected
+        +Float balance_remaining
+        +Int missed_weeks
+        +apply_sweep(net_settlement)
+        +evaluate_trueup(day_no)
+        +evaluate_weekly_minimum(today)
+    }
+
+    class LedgerEntry {
+        +String merchant_id
+        +Int day_no
+        +Date date
+        +Float net_settlement
+        +Float holdback_pct_in_force
+        +Float sweep
+        +Float mandate_debit
+        +Float mandate_charge
+        +Float cumulative_collected
+        +Float balance_remaining
+        +Int missed_weeks
+        +MerchantStatus status
+        +List~String~ flags
+    }
+
+    MerchantProfile "1" --> "1" UnderwritingOffer : underwritten to
+    UnderwritingOffer "1" --> "1" MerchantSimulationState : accepted into
+    MerchantSimulationState "1" --> "*" LedgerEntry : records daily
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 4: State Machine Diagram -->
+    <h2>4. Merchant Account State Machine</h2>
+    <p>
+        Each merchant transitions through formal lifecycle states governed by underwriting results, collections performance, and mandate compliance:
+    </p>
+
+    <div class="diagram-box">
+        <div class="mermaid">
+stateDiagram-v2
+    [*] --> PROSPECT : Merchant Profile Ingested
+    PROSPECT --> ELIGIBLE : Underwriting passes BR-01 & BR-03
+    PROSPECT --> INELIGIBLE : Fails BR-01 or BR-03
+    INELIGIBLE --> [*]
+
+    ELIGIBLE --> ACTIVE : ACCEPT Command / Net Disbursal (Day 0)
+    
+    ACTIVE --> ACTIVE : Daily Sweep / Successful Mandate Debit
+    ACTIVE --> WATCH : 2 Missed Weekly Shortfall Debits (BR-10)
+    WATCH --> ACTIVE : (Cured / Monitored)
+    WATCH --> DEFAULT : 4 Missed Weekly Shortfall Debits (BR-10)
+    
+    DEFAULT --> DEFAULT : Accelerated Balance + 5% Penalty (Sweeps Halted)
+    
+    ACTIVE --> CLOSED : Balance = Rs 0 (Cap fully collected)
+    ACTIVE --> CLOSED : EARLY_PAYOFF Command (BR-12 Discount)
+    ACTIVE --> RENEWED : RENEW Command (>= 60% Collected, Net-Off)
+    
+    CLOSED --> [*]
+    DEFAULT --> [*]
+    RENEWED --> ACTIVE : New Advance Activated
+        </div>
+    </div>
+
+    <!-- Section 5: Daily Job Precedence -->
+    <h2>5. Daily Job Execution Precedence (BR-07)</h2>
+    <p>
+        For each date <code>D</code>, the daily simulation runs operations in non-negotiable priority order:
+    </p>
+
+    <div class="diagram-box">
+        <div class="mermaid">
+flowchart TD
+    Start([Date D Simulation Starts]) --> P1[Precedence 1: Settlement Sweep]
+    P1 -->|Fetch Net Settlement| P1_Calc[Sweep = floor holdback % × net settlement]
+    P1_Calc -->|Balance -= Sweep| P2{Precedence 2: True-Up Check}
+
+    P2 -->|Day 60, 90, 120...| P2_Eval[Compare Cumulative to Plan]
+    P2 -->|Other Days| P3{Precedence 3: Monday Check}
+    P2_Eval -->|> 130% Plan| P2_Down[Holdback -= 2 points next day floor 8%]
+    P2_Eval -->|< 70% Plan| P2_Up[Holdback += 2 points next day ceiling 20%]
+    P2_Eval -->|70% - 130%| P3
+
+    P2_Down --> P3
+    P2_Up --> P3
+
+    P3 -->|Today is Monday| P3_Eval[Check Preceding Mon-Sun Sweeps]
+    P3 -->|Tuesday-Sunday| P4[Precedence 4: Delinquency Check]
+    
+    P3_Eval -->|< 50% Expected Weekly| P3_Shortfall{Does Mandate Fail?}
+    P3_Eval -->|>= 50% Expected Weekly| P4
+    
+    P3_Shortfall -->|MANDATE_FAIL command| P3_Fail[Balance += Rs 500, Missed Weeks += 1]
+    P3_Shortfall -->|Success| P3_Pass[Collect Shortfall, Balance -= Shortfall]
+    
+    P3_Fail --> P4
+    P3_Pass --> P4
+
+    P4 -->|Missed Weeks >= 4| P4_Def[DEFAULT: +5% Penalty, Halt Sweeps]
+    P4 -->|Missed Weeks >= 2| P4_Watch[WATCH: Block Renewals]
+    P4 -->|< 2 Missed Weeks| P5{Precedence 5: Term Tracking}
+    P4_Def --> P5
+    P4_Watch --> P5
+
+    P5 -->|Day >= Term + 60| P5_Flag[Flag: TERM_REVIEW]
+    P5 -->|Day < Term + 60| P6[Record Daily Ledger Entry]
+    P5_Flag --> P6
+
+    P6 --> Commands[Execute Post-Job Commands for Date D]
+    Commands --> End([Date D Finished])
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Section 6: Business Rule Register -->
+    <h2>6. Business Rule Register (BR-01 through BR-14)</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">Rule ID</th>
+                <th style="width: 22%;">Rule Name</th>
+                <th style="width: 38%;">Mathematical Formula / Criteria</th>
+                <th>Output / State Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>BR-01</strong></td>
+                <td>Merchant Eligibility</td>
+                <td>
+                    • Days of settlement history $\ge 180$<br>
+                    • Average monthly settlements $\ge$ Rs 1,00,000<br>
+                    • No month settlements &lt; 40% of 6m average<br>
+                    • Business age $\ge 12$ full months
+                </td>
+                <td><code>eligible = True/False</code>. If False, records failed rule IDs.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-02</strong></td>
+                <td>Advance Amount Sizing</td>
+                <td>
+                    $\text{Basis} = \min(\text{avg}_{\text{6m}}, \text{avg}_{\text{3m}})$<br>
+                    $\text{Advance} = \min(\text{requested}, 1.2 \times \text{Basis}, 2500000.00)$
+                </td>
+                <td>Sized advance amount capped at Rs 25 Lakh.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-03</strong></td>
+                <td>Factor Rate & Repayment Cap</td>
+                <td>
+                    $\text{CV} = \sigma_{\text{pop}} / \mu_{\text{6m}}$<br>
+                    $\text{CV} \le 0.15 \implies 1.12$<br>
+                    $0.15 &lt; \text{CV} \le 0.30 \implies 1.18$<br>
+                    $0.30 &lt; \text{CV} \le 0.45 \implies 1.25$<br>
+                    $\text{CV} &gt; 0.45 \implies \text{Ineligible}$<br>
+                    $\text{Cap} = \text{Advance} \times \text{Factor}$
+                </td>
+                <td>Establishes total monetary repayment obligation.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-04</strong></td>
+                <td>Holdback & Expected Term</td>
+                <td>
+                    Default holdback = 12%.<br>
+                    $\text{Term} = \text{Cap} / (\text{Holdback} \times \text{avg}_{\text{daily}})$<br>
+                    Target range: $[120, 270]$ days.<br>
+                    Step holdback in 1% within $[8\%, 20\%]$. If still $>270$, reduce advance to fit 270 days.
+                </td>
+                <td>Sets holdback rate and expected loan tenure.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-05</strong></td>
+                <td>Fee Structure, GST & APR</td>
+                <td>
+                    $\text{Fee} = 0.02 \times \text{Advance}$<br>
+                    $\text{GST} = 0.18 \times \text{Fee}$<br>
+                    $\text{Disbursal} = \text{Advance} - \text{Fee} - \text{GST}$<br>
+                    $\text{APR} = \frac{\text{Cap}-\text{Adv}}{\text{Adv}} \times \frac{365}{\text{Term}} \times 100$
+                </td>
+                <td>Net disbursed funds credited to merchant and APR disclosure.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-06</strong></td>
+                <td>Daily Sweep</td>
+                <td>
+                    $\text{Sweep} = \lfloor \text{Holdback} \times \text{Net Settlement} \rfloor$<br>
+                    Net $\le 0 \implies \text{Sweep} = 0$. Day 0 sweeps 0.<br>
+                    Sweep cannot exceed remaining balance.
+                </td>
+                <td>Daily cash collection credited to account.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-07</strong></td>
+                <td>Job Precedence</td>
+                <td>
+                    Sweep $\to$ True-Up $\to$ Weekly Minimum $\to$ Delinquency $\to$ Term Review
+                </td>
+                <td>Strict priority ordering of daily mutations.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-08</strong></td>
+                <td>Mid-Term True-Up</td>
+                <td>
+                    Evaluated on Day 60 and every 30 days after.<br>
+                    $\text{Plan}_n = (\text{Cap} \times n) / \text{Term}$<br>
+                    • If $\text{Cumulative} &gt; 1.30 \times \text{Plan} \implies \text{HB} = \max(8\%, \text{HB}-2\%)$<br>
+                    • If $\text{Cumulative} &lt; 0.70 \times \text{Plan} \implies \text{HB} = \min(20\%, \text{HB}+2\%)$<br>
+                    Effective from Day $n+1$.
+                </td>
+                <td>Adjusts daily holdback percentage mid-term.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-09</strong></td>
+                <td>Weekly Minimum Shortfall</td>
+                <td>
+                    Evaluated Mondays for preceding Mon–Sun (7 days).<br>
+                    $\text{Threshold} = 0.50 \times (\text{Cap}/\text{Term} \times 7)$<br>
+                    Shortfall debited from bank mandate. Failed debit adds Rs 500 charge + 1 missed week.
+                </td>
+                <td>Automated shortfall collection via bank mandate.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-10</strong></td>
+                <td>Delinquency & Default</td>
+                <td>
+                    • 2 missed weeks $\implies$ <strong>WATCH</strong> (blocks renewals)<br>
+                    • 4 missed weeks $\implies$ <strong>DEFAULT</strong> (accelerates balance + 5% penalty, sweeps cease)
+                </td>
+                <td>Enforces risk escalation and legal recovery.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-11</strong></td>
+                <td>Term Tracking</td>
+                <td>
+                    If $\text{Day} \ge \text{Term} + 60 \implies \text{Flag: TERM\_REVIEW}$
+                </td>
+                <td>Flags slow-paying merchants for portfolio review.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-12</strong></td>
+                <td>Early Payoff Discount</td>
+                <td>
+                    $\text{Factor Rem} = (\text{Cap}-\text{Adv}) - \frac{\text{Col}}{\text{Cap}}(\text{Cap}-\text{Adv})$<br>
+                    • Day &lt; 90: 50% discount on factor remaining<br>
+                    • Day $\ge$ 90: 25% discount on factor remaining<br>
+                    $\text{Amount Due} = \text{Balance} - \text{Discount}$
+                </td>
+                <td>Early contract payoff at discounted factor markup.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-13</strong></td>
+                <td>Advance Renewal</td>
+                <td>
+                    Allowed when $\text{Collected}/\text{Cap} \ge 60\%$ and status $\ne \text{WATCH}/\text{DEFAULT}$.<br>
+                    Nets off old remaining balance at zero discount.
+                </td>
+                <td>Closes old advance as RENEWED; opens new advance.</td>
+            </tr>
+            <tr>
+                <td><strong>BR-14</strong></td>
+                <td>External Refinance</td>
+                <td>
+                    Requires payoff letter; advance capped at $1.0\times$ basis monthly settlements. Pays off other lender out of disbursal.
+                </td>
+                <td>Lender buyout net disbursal.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 7: Edge Cases -->
+    <h2>7. Resolution of Mandatory Edge Cases & Planted Traps</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Edge Case Scenario</th>
+                <th>Engine Resolution & Mathematical Handling</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>CV exactly 0.1500 & 0.4500 (MCH-001 & MCH-008)</strong></td>
+                <td>Upper boundaries are inclusive: <code>CV <= 0.15</code> qualifies for 1.12; <code>CV <= 0.45</code> qualifies for 1.25. MCH-001 receives factor 1.12; MCH-008 receives factor 1.25.</td>
+            </tr>
+            <tr>
+                <td><strong>Expected Term exactly 270.00 Days (MCH-002)</strong></td>
+                <td>Term is exactly 270.00 days before holdback adjustment. Because $270.00 \le 270.00$ falls within the statutory $[120, 270]$ range, holdback remains at default 12%.</td>
+            </tr>
+            <tr>
+                <td><strong>Week with Rs 0 settlements on all days (MCH-003)</strong></td>
+                <td>Calendar week 2026-10-05 to 2026-10-11 has zero settlements. Flagged <code>ZERO_WEEK</code>. Monday shortfall presented is the full 50% threshold (Rs 6,300.00).</td>
+            </tr>
+            <tr>
+                <td><strong>Day 60 True-Up at exactly 130% of Plan (MCH-003)</strong></td>
+                <td>Plan = Rs 1,08,000.00; Actual Collections = Rs 1,40,400.00 (exactly 130.00%). Because rule specifies strictly <code>> 130%</code>, holdback is <strong>not</strong> reduced.</td>
+            </tr>
+            <tr>
+                <td><strong>Early Payoff on Day 90 (MCH-004)</strong></td>
+                <td>Disbursal is Day 0; date 2026-09-29 is Day 90. Falls into the 25% discount tier ($\text{Day} \ge 90$). Discount is 25% of uncollected factor portion.</td>
+            </tr>
+            <tr>
+                <td><strong>Renewal at exactly 60% of Cap (MCH-005)</strong></td>
+                <td>Cumulative collections after Day 135 sweep = Rs 2,90,304.00 = exactly $60.00\%$ of cap Rs 4,83,840.00. Because rule specifies $\ge 60\%$, renewal is accepted.</td>
+            </tr>
+            <tr>
+                <td><strong>Monday Holiday Mandate Failure (MCH-006)</strong></td>
+                <td>2026-09-14 is Ganesh Chaturthi bank holiday. Command <code>MANDATE_FAIL</code> registers failure. Engine records Rs 500 charge and increments missed weeks.</td>
+            </tr>
+            <tr>
+                <td><strong>Negative Net Settlement (MCH-006)</strong></td>
+                <td>Gross sales Rs 4,200.00 − MDR Rs 63.00 − Refunds Rs 9,800.00 = Net −Rs 5,663.00. Sweep is safely clamped to Rs 0.00.</td>
+            </tr>
+            <tr>
+                <td><strong>Ineligible Traps (MCH-009 & MCH-010)</strong></td>
+                <td>MCH-009 fails 40% monthly floor (March was Rs 60k &lt; Rs 64k threshold). MCH-010 business age is 11 months (&lt;12 months). Subsequent <code>ACCEPT</code> commands are rejected.</td>
+            </tr>
+            <tr>
+                <td><strong>Duplicate & Out-of-Order Feeds</strong></td>
+                <td>Deduplication on <code>(merchant_id, date)</code> ensures duplicate rows (MCH-001 on 2026-08-12) are swept once. Feed events are sorted chronologically by date.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="callout">
+        <strong>Week 1 Deliverable Status:</strong> 
+        All components required by 10 SECONDS for Week 1 (Glossary, Architecture, Class Diagram, State Machine Diagram, Business Rule Register BR-01..BR-14, and Edge Cases) are 100% complete and validated.
+    </div>
+
+</div>
+
+</body>
+</html>
