@@ -138,21 +138,4 @@ T096-PS-027/
 
 ---
 
-## 6. Viva Presentation & Live Coding Guide
 
-### A. Factor-Rate Pricing vs. Compound Interest
-* **Why Factor Rates?** In Merchant Cash Advances, the lender is purchasing future receivables at a discount, not issuing a traditional loan with an amortization schedule.
-* **No Compounding:** A factor rate creates a fixed, upfront monetary markup ($\text{Cap} = \text{Advance} \times \text{Factor}$). The total amount owed never increases with time, regardless of whether repayment takes 120 days or 270 days.
-* **Why APR is Still Disclosed:** Regulation requires providing an annualized effective APR so merchants can compare alternative financing options against conventional bank term loans.
-
-### B. How True-Ups Change Holdback Mid-Term
-* RBF contracts aim for an expected tenure (e.g. 180–224 days).
-* If a merchant has unexpectedly booming sales, sweeping 12% would deplete their working capital too aggressively. A True-Up down to 10% or 8% leaves more daily cash in the merchant's hands.
-* Conversely, if sales drop significantly, a True-Up up to 14%–20% ensures the advance is repaid before the merchant's risk profile deteriorates.
-
-### C. Live Code Modification Cheatsheet (for Viva Panel)
-If the viva panel asks you to modify a rule live:
-* **To change the fee or GST rate:** Look in [`src/underwriting.py`](src/underwriting.py) under `underwrite_merchant` (lines 148–150).
-* **To change the True-Up threshold (e.g., from 130% to 125%):** Look in [`src/simulator.py`](src/simulator.py) under `_run_daily_job` (lines 115–124).
-* **To change the missed weeks threshold for WATCH or DEFAULT:** Look in [`src/simulator.py`](src/simulator.py) under Precedence 4 (lines 160–180).
-* **To change the Early Payoff discount tiers:** Look in [`src/simulator.py`](src/simulator.py) under `EARLY_PAYOFF` command handler (lines 225–240).
