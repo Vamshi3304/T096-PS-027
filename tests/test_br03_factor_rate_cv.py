@@ -56,8 +56,8 @@ def test_br03_repayment_cap_calculation():
     """Repayment cap = advance * factor."""
     advance = 200000.0
     factor = 1.12
-   assert round(200000.0 * 1.12, 2) == 224000.0
+    assert round(advance * factor, 2) == 224000.0
 
     advance_high = 311040.0
     factor_high = 1.25
-    assert advance_high * factor_high == 388800.0
+    assert round(advance_high * factor_high, 2) == 388800.0
