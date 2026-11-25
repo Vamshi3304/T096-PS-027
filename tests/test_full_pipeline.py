@@ -121,11 +121,7 @@ def test_pipeline_mch008_refinance(run_full_simulation):
     refinances = [p for p in engine.payoffs if p.merchant_id == "MCH-008" and p.event == "REFINANCE"]
     assert len(refinances) == 1
     ref = refinances[0]
-   if is_refinance:
-    max_advance = min(1.0 * avg_6m, 2500000.0)
-else:
-    max_advance = min(1.2 * basis_monthly, 2500000.0)
-advance = min(requested_advance, max_advance)
+    assert ref.new_advance == 150000.0
     assert ref.amount_due_or_netted == 96500.0
     assert ref.new_net_disbursal == 49960.0
 
