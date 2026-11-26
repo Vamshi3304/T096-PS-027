@@ -142,7 +142,7 @@ T096-PS-027/
 ---
 
 
-13. Project Demonstration Video
+##6. Project Demonstration Video
 Five-minute project demonstration:
 https://drive.google.com/file/d/1eO4jTZxgHcv4GmyNmYaAucVBl62_kNU8/view?usp=drivesdk
 
