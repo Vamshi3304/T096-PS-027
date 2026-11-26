@@ -136,6 +136,23 @@ T096-PS-027/
 | **BR-13** | Renewal | Allowed when $\ge 60\%$ of cap collected and not WATCH/DEFAULT. Nets off old balance at 0% discount. |
 | **BR-14** | External Refinance | Caps advance at $1.0\times$ basis monthly settlements. Pays off other lender out of disbursal proceeds. |
 
+
+
+
 ---
+
+
+13. Project Demonstration Video
+Five-minute project demonstration:
+https://drive.google.com/file/d/1eO4jTZxgHcv4GmyNmYaAucVBl62_kNU8/view?usp=drivesdk
+
+The demonstration covers:
+
+-Project introduction and problem statement
+-System architecture
+-Official sample-pack execution
+-Generated CSV output files
+-Automated testing and validation results
+-Project conclusion
 
 
